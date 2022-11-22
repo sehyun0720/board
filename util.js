@@ -16,5 +16,37 @@ util.parseError = function(errors){
     }
     return parsed;
 }
+util.isLoggedin = function(req, res, next){
+    if(req.isAuthenticated()){
+        next();
+    }
+    else {
+        req.flash('errors', {login:'Please login first'});
+        res.redirect('/login');
+    }
+}
+
+util.noPermission = function(req, res){
+    req.flash('errors', {login:"You don't have permission"});
+    req.logout();
+    req.redirect('/login');
+}
+
+util.getPostQueryString = function(req, res, next){
+    res.locals.getPostQueryString = function(isAppended=false, overwrites={}){
+        let queryString ='';
+        let queryArray = [];
+        let page = overwrites.page?overwrites.page:(req.query.page?req.query.page:'');
+        let limit = overwrites.limit?overwrites.limit:(req.query.limit?req.query.limit:'');
+
+        if(page) queryArray.push('page='+page);
+        if(limit) queryArray.push('limit='+limit);
+
+        if(queryArray.length>0) queryString = (isAppended?'&':'?') + queryArray.join('&');
+
+        return queryString;
+    }
+    next();
+}
 
 module.exports = util;
