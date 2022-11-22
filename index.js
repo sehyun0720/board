@@ -5,6 +5,7 @@ const bodyParser = require('body-parser');
 const methodOverride = require('method-override');
 const flash = require('connect-flash');
 const session = require('express-session');
+const passport = require('./config/passport');
 const app = express();
 
 //DB setting
@@ -25,6 +26,18 @@ app.use(bodyParser.urlencoded({extended:true}));
 app.use(methodOverride('_method'));
 app.use(flash());
 app.use(session({secret:'MySecret', resave:true, saveUninitialized:true}));
+
+// Passport
+app.use(passport.initialize()); //passport 초기화
+app.use(passport.session());    // passport를 session과 연결
+
+//Custom Middleware
+app.use(function(req, res, next){
+    //res.locals 변수 > ejs에서 바로 사용 가능
+    res.locals.isAuthenticated = req.isAuthenticated(); //현재 로그인되어 있는지 확인
+    res.locals.currentUser = req.user;     // session으로부터 user를 deserialize하여 생성된다.
+    next();
+});
 
 // Routes
 app.use('/', require('./routes/home'));
