@@ -35,4 +35,37 @@ $(function(){
 
     convertDate();
     convertDateTime();
-})
+});
+
+$(function(){
+    let search = window.location.search;
+    let params = {};
+
+    if(search){
+        $.each(search.slice(1).split('&'), function(index,param){
+            let index = param.indexOf('=');
+            if(index>0){
+                let key = param.slice(0, index);
+                let value = param.slice(index+1);
+
+                if(!params[key]) params[key] = value;
+            }
+        });
+    }
+
+    if(params.searchText && params.searchText.length>=3){
+        $('[data-search-highlight]').each(function(index,element){
+            let $element = $(element);
+            let searchHighlight = $element.data('search-highlight');
+            let index = params.searchType.indexOf(searchHighlight);
+
+            if(index>=0){
+                let decodedSearchText = params.searchText.replace(/\+/g, ' ');
+                decodedSearchText = decodeURI(decodedSearchText);
+
+                let regex = new RegExp(`(${decodedSearchText})`, 'ig');
+                $element.html($element.html().replace(regex, '<span class="highlighted">$1</span>'));
+            }
+        });
+    }
+});

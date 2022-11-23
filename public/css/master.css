@@ -20,7 +20,8 @@ body{
     width: 100px;
 }
 
-.post-body{
+.post-body,
+.comment-text {
     white-space: pre-line;  /* "\n" 이 줄바꿈 역할을 할 수 있게 함 > 안하면 <br>만 줄바꿈됨 */
 }
 .post-info{
@@ -28,4 +29,15 @@ body{
 }
 .user-form{
     width: 400px;
+}
+
+.post-index-tool{
+    max-width: 450px;
+}
+.post-index-tool input[type='text']{
+    max-width: 130px;
+}
+
+.highlighted{
+    background-color: yellow;
 }
